@@ -16,7 +16,7 @@ int get_total_length(char* arr[], int size) {
 	return length;
 }
 
-// Concatène un tableau de chaines de caractères par des espaces
+// Concatène un tableau de chaines de caractères avec des espaces
 void concat(char* arr[], int size, char* result) {
 	int len, i, j, ci = 0;
 
@@ -24,12 +24,12 @@ void concat(char* arr[], int size, char* result) {
 	for (i = 0; i < size; i++) {
 		len = strlen(arr[i]);
 		for (j = 0; j < len; j++)
-			result[ci++] = arr[i][j]; // 
+			result[ci++] = arr[i][j]; // On ajoute au résultat toutes les lettres de l'élément
 
-		result[ci++] = ' ';
+		result[ci++] = ' '; // A chaque fin de mot, on rajoute un espace
 	}
 
-	result[ci] = '\0'; // On remplace l'espace de fin par la fin de la chaine
+	result[ci] = '\0'; // On remplace le dernier espace par la fin de la chaine
 }
 
 
@@ -41,23 +41,26 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
+	// Offset dans argv
 	int i, j, offset = 1;
 
-	if (strcmp(argv[1], "-u") == 0) {
+	if (strcmp(argv[offset], "-u") == 0) {
 		if (argc < 3) {
 			write(1, help, strlen(help));
 			return 1;
 		}
 
-		offset++;
-		for (i = 2; i < argc; i++)
+		// On incrémente l'offset par un
+		for (i = ++offset; i < argc; i++)
 			for (j = 0; j < (int) strlen(argv[i]); j++)
-				argv[i][j] = toupper((int) argv[i][j]);
+				argv[i][j] = toupper((int) argv[i][j]); // Et on convertit tous les cacractères en uppercase
 	}
 
+	// On récupère la longueur totale des arguments
 	int length = get_total_length(&argv[offset], argc - offset) + argc - (1 + offset);
-	char chaine[length];
+	char chaine[length]; // On alloue l'espace
 
+	// On concatène dans la variable chaine
 	concat(&argv[offset], argc - offset, chaine);
 
 	for (i = 0; i < length / 2; i++) {

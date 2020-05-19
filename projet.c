@@ -4,19 +4,19 @@
 #include <string.h>
 #include <sys/wait.h>
 
-//ps -e | wc -l
 int main(int argc, char* argv[]) {
 	if (argc < 2) {
-
 		char* ok = "Syntaxe correcte ./projet '-parametres palyndrome'\n";
 		write(1, ok, strlen(ok));
 		exit(0);
 	}
+
 	int fp[2];/*  ouverture d'un pipe */
 	if (pipe(fp)) {//Si pas bon erreur
-		write(2, "Error1", 6);
+		write(2, "Impossible de creer le pipe.", 6);
 		exit(3);
 	}
+	
 	/*On construit le tableau d'argument que prend ./palin*/
 	char* argo[argc + 1];
 	argo[0] = "palin";
@@ -25,9 +25,10 @@ int main(int argc, char* argv[]) {
 		//printf("%s\n",argo[i]); Verification new table
 	}
 	argo[argc] = NULL;
+
 	switch (fork()) {
 		case -1: /* erreur */
-			write(2, "Error2", 6);
+			write(2, "Impossible de creer le pipe.", 6);
 			exit(-1);
 		case 0: /* FILS: execute la commande ps -e */
 				 /* la sortie standard du processus est redirigee sur le pipe*/
@@ -36,7 +37,7 @@ int main(int argc, char* argv[]) {
 			close(fp[1]);
 			close(fp[0]); /* le processus ne lit pas dans le pipe */
 			execvp("./palin", argo);/**/
-			write(2, "Error3\n", 6);
+			write(2, "Impossible d'exécuter le programme 'palin'.\n", 6);
 			exit(3);
 		default: /*El PADRE: pere execute la commande wc -l */
 			   /* l'entree standard du processus est redirigee sur le pipe */
@@ -45,10 +46,11 @@ int main(int argc, char* argv[]) {
 			dup(fp[0]); /* fp[1] sortie standard du processus */
 			close(fp[0]);
 			close(fp[1]);
-			char bonjour[30];
+
+			char bonjour[50];
 			int bytes;
-			if ((bytes = read(0, bonjour, 30)) == -1) {
-				printf("Error 404\n");
+			if ((bytes = read(0, bonjour, 50)) == -1) {
+				printf("Impossible de lire dans le pipe.\n");
 				exit(2);
 			}
 			write(1, bonjour, bytes);
