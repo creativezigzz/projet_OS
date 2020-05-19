@@ -6,7 +6,6 @@
 
 //ps -e | wc -l
 int main(int argc, char *argv[]){
-  printf("%d\n", argc);
   if(argc < 2){
 
     char * ok= "Syntaxe correcte ./projet '-parametres palyndrome'\n";
@@ -18,11 +17,12 @@ int main(int argc, char *argv[]){
     write(2,"Error1",6);
     exit(3);
   }
+  /*On construit le tableau d'argument que prend ./palin*/
   char * argo[argc+1];
   argo[0]="palin";
   for(int i=1;i<argc;i++){
     argo[i]=argv[i];
-    printf("%s\n",argo[i]);
+    //printf("%s\n",argo[i]); Verification new table
   }
   switch (fork()) {
     case -1 : /* erreur */
@@ -34,8 +34,7 @@ int main(int argc, char *argv[]){
              dup(fp[1]); /* fp[1] sortie standard du processus */
              close (fp[1]);
              close (fp[0]); /* le processus ne lit pas dans le pipe */
-             /*On construit le tableau d'argument que prend palin*/
-             execvp("./palin",argo);
+             execvp("./palin",argo);/**/
              write(2,"Error3\n",6);
              exit(3);
     default : /*El PADRE: pere execute la commande wc -l */
