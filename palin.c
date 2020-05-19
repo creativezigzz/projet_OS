@@ -3,7 +3,10 @@
 #include <unistd.h>
 #include <string.h>
 
-int main(void){
-  printf("Hello World \n");
+int main(int argc, char * argv[]){
+  for(int i=0;i<argc;i++){
+    printf("%s\n",argv[i]);
+  }
+
   return 0;
 }
