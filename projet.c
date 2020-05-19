@@ -24,6 +24,7 @@ int main(int argc, char* argv[]) {
 		argo[i] = argv[i];
 		//printf("%s\n",argo[i]); Verification new table
 	}
+	argo[argc] = NULL;
 	switch (fork()) {
 		case -1: /* erreur */
 			write(2, "Error2", 6);
