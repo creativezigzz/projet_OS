@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <ctype.h>
 
 // Retourne la somme de la longueur des chaines de caractères d'un tableau.
 int get_total_length(char* arr[], int size) {
@@ -15,43 +16,57 @@ int get_total_length(char* arr[], int size) {
 	return length;
 }
 
-
+// Concatène un tableau de chaines de caractères par des espaces
 void concat(char* arr[], int size, char* result) {
 	int len, i, j, ci = 0;
 
+	// Pour chaque élément dans le tableau,
 	for (i = 0; i < size; i++) {
 		len = strlen(arr[i]);
 		for (j = 0; j < len; j++)
-			result[ci++] = arr[i][j];
+			result[ci++] = arr[i][j]; // 
 
 		result[ci++] = ' ';
 	}
 
-	result[ci] = '\0'; // on remplace l'espace de fin par la fin de la chaine
+	result[ci] = '\0'; // On remplace l'espace de fin par la fin de la chaine
 }
 
 
 int main(int argc, char* argv[]) {
+	char* help = "Utilisation: palin [-u] <chaine de caractères>\n";
+
 	if (argc < 2) {
-		printf("Utilisation: palin <chaine de caractères>\n");
+		write(1, help, strlen(help));
 		return 1;
 	}
 
-	int i;
-	int length = get_total_length(&argv[1], argc - 1) + argc - 2;
-	char* chaine = malloc(length);
+	int i, j, offset = 1;
 
-	concat(&argv[1], argc - 1, chaine);
+	if (strcmp(argv[1], "-u") == 0) {
+		if (argc < 3) {
+			write(1, help, strlen(help));
+			return 1;
+		}
+
+		offset++;
+		for (i = 2; i < argc; i++)
+			for (j = 0; j < (int) strlen(argv[i]); j++)
+				argv[i][j] = toupper((int) argv[i][j]);
+	}
+
+	int length = get_total_length(&argv[offset], argc - offset) + argc - (1 + offset);
+	char chaine[length];
+
+	concat(&argv[offset], argc - offset, chaine);
 
 	for (i = 0; i < length / 2; i++) {
 		if (chaine[i] != chaine[length - i - 1]) {
-			printf("0\n");
-			free(chaine);
+			write(1, "0", 2);
 			return 0;
 		}
 	}
-	printf("1\n");
-	free(chaine);
+	write(1, "1", 2);
 
 	return 0;
 }

@@ -45,12 +45,14 @@ int main(int argc, char* argv[]) {
 			dup(fp[0]); /* fp[1] sortie standard du processus */
 			close(fp[0]);
 			close(fp[1]);
-			char bonjour[100];
-			if (read(0, bonjour, 100) == -1) {
+			char bonjour[30];
+			int bytes;
+			if ((bytes = read(0, bonjour, 30)) == -1) {
 				printf("Error 404\n");
 				exit(2);
 			}
-			printf("%s\n", bonjour);
+			write(1, bonjour, bytes);
+			printf("\n");
 			return 0;
 	}
 }
